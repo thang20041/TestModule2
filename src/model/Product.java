@@ -57,15 +57,10 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id='" + id + '\'' +
-                ", productName='" + productName + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", productType='" + productType + '\'' +
-                '}';
+        return "ID: " + id + "  -  Tên: " + productName + "  -  Số lượng: " + quantity + "  -  Giá: " + price + "  -  Loại: " + productType;
     }
-    public String getData(){
-return id + "," + productName + "," + quantity +"," + price +","+ productType;
+
+    public String getData() {
+        return id + "," + productName + "," + quantity + "," + price + "," + productType;
     }
 }

@@ -12,12 +12,14 @@ public class ProductManager implements iProduct<Product> {
 
 
     public ProductManager() {
-        productList = new ArrayList<>();
+        productList = readAndWriteFileProduct.ReaFile();
+
 
     }
 
     public void addProduct(Product product) {
         productList.add(product);
+        readAndWriteFileProduct.writeFile(productList);
     }
 
 
@@ -26,6 +28,7 @@ public class ProductManager implements iProduct<Product> {
         for (Product product : productList) {
             if (product.getId().equals(id)) {
                 productList.remove(product);
+                readAndWriteFileProduct.writeFile(productList);
                 check = true;
             }
         }
@@ -51,6 +54,7 @@ public class ProductManager implements iProduct<Product> {
                 product.setPrice(newProduct.getPrice());
                 product.setQuantity(newProduct.getQuantity());
                 product.setProductType(newProduct.getProductType());
+                readAndWriteFileProduct.writeFile(productList);
                 check = true;
             }
         }
@@ -71,6 +75,15 @@ public class ProductManager implements iProduct<Product> {
             }
         }
         return result;
+    }
+    public List<Product> getByCategory(String type) {
+        List<Product> matchingProducts = new ArrayList<>();
+        for (Product product : productList) {
+            if (product.getProductType().equalsIgnoreCase(type)) {
+                matchingProducts.add(product);
+            }
+        }
+        return matchingProducts;
     }
 
 
