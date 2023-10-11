@@ -11,48 +11,49 @@ public class Menu {
     ProductManager productManager = new ProductManager();
     Scanner inputInt = new Scanner(System.in);
     Scanner inputString = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
 
     public void productMenu() {
         int choice;
         do {
             System.out.println("---Quản Lý Sản Phẩm---");
-            System.out.println("1.Thêm mới sản phẩm. ");
-            System.out.println("2.Xóa sản phẩm.");
+            System.out.println("1.Hiển thị tất cả danh sách sản phẩm.");
+            System.out.println("2.Thêm mới sản phẩm. ");
             System.out.println("3.Sửa thông tin sản phẩm.");
-            System.out.println("4.Tìm kiếm sản phẩm theo Id.");
-            System.out.println("5.Tìm kiếm sản phẩm theo tên. ");
-            System.out.println("6.Hiển thị tất cả danh sách sản phẩm.");
-            System.out.println("7.Tìm kiếm sản phẩm theo loại.");
+            System.out.println("4.Xóa sản phẩm.");
+            System.out.println("5.Sắp xếp");
+            System.out.println("6.Tìm sản phẩm có giá đắt nhất ");
             System.out.println("0.Thoát ứng dụng.");
             System.out.println("Nhập lựa chọn của bạn: ");
             choice = Validate.checkChoice();
             switch (choice) {
                 case 1:
-                    showAdd();
+                    showAll();
                     break;
                 case 2:
-                    showDelete();
+                    showAdd();
                     break;
                 case 3:
                     showEditProduct();
                     break;
                 case 4:
-                    showSearchById();
+                    showDelete();
+
                     break;
                 case 5:
-                    showSearchByName();
+                    showSortProducts();
                     break;
                 case 6:
-                    showAll();
+                    showFindMaxPriceProduct();
                     break;
-                case 7:
-                    showProductByType();
+                case  0:
                     break;
                 default:
-                    System.out.println("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
-                    break;
-
+                    System.out.println("Lựa chọn không hợp lệ. Vui lòng chọn 0 để quay lại Menu.");
+                    scanner.nextLine();
+                    choice = -1;
             }
+
         } while (choice != 0);
     }
 
@@ -60,32 +61,53 @@ public class Menu {
         System.out.println("---Thêm sản phẩm mới---");
         System.out.println("Nhập thông tin chi tiết sản phẩm:");
         System.out.print("ID (3 hoặc nhiều chữ số): ");
-        String id = Validate.checkID();
+        String id = Validate.checkID(productManager);
         System.out.print("Tên sản phẩm (6-8 kí tự): ");
         String name = Validate.checkName();
         System.out.print("Số lượng sản phẩm (nhỏ hơn 100): ");
         int quantity = Validate.checkQuantity();
         System.out.print("Giá sản phẩm (trên 10000 đồng): ");
         double price = Validate.checkPrice();
-        System.out.print("Loại Sản phẩm: ");
-        String productType = inputString.nextLine();
-        productManager.addProduct(new Product(id, name, quantity, price, productType));
+        System.out.print("Mô tả sản phẩm: ");
+        String describeProduct = inputString.nextLine();
+        productManager.addProduct(new Product(id, name, quantity, price, describeProduct));
         System.out.println("THÊM SẢN PHẨM THÀNH CÔNG !!");
+        System.out.println("Ấn Enter để quay lại Menu...");
+        scanner.nextLine();
 
     }
 
     public void showDelete() {
         System.out.println("---Xóa Sản Phẩm Khỏi Danh Sách---");
         System.out.print("Nhập ID sản phẩm cần xóa: ");
-        String id = Validate.checkID();
-        boolean isDeleted = productManager.removeProduct(id);
-        if (isDeleted) {
-            System.out.println("Xóa sản phẩm thành công.");
+        String deleteID = inputString.nextLine();
+        Product productToDelete = productManager.findIndexById(deleteID);
+        if (productToDelete == null) {
+            System.out.println("Không tìm thấy sản phẩm có ID  " + deleteID + " để xóa:))");
         } else {
-            System.out.println("Không tìm thấy sản pẩm có ID  " + id + " để xóa:))");
+            System.out.println("Sản phẩm được tìm thấy:");
+            System.out.println("Sản phẩm được tìm thấy:");
+            System.out.println("ID: " + productToDelete.getId());
+            System.out.println("Tên: " + productToDelete.getProductName());
+            System.out.println("Giá: " + productToDelete.getPrice());
+            System.out.println("Số lượng: " + productToDelete.getQuantity());
+            System.out.print("Bạn có chắc chắn muốn xóa sản phẩm này? (Y/N): ");
+            String confirmation = inputString.nextLine();
+            if (confirmation.equalsIgnoreCase("Y")) {
+                boolean isDeleted = productManager.removeProduct(deleteID);
+                if (isDeleted) {
+                    System.out.println("Xóa sản phẩm thành công.");
+                } else {
+                    System.out.println("Xóa sản phẩm không thành công.");
+                }
+            } else {
+                System.out.println("Xóa sản phẩm đã bị hủy.");
+            }
         }
-
+        System.out.println("Ấn Enter để quay lại Menu...");
+        scanner.nextLine();
     }
+
 
     public void showAll() {
         List<Product> products = productManager.findAll();
@@ -95,21 +117,16 @@ public class Menu {
         } else {
             System.out.println("===== DANH SÁCH TẤT CẢ SẢN PHẨM =====");
             for (Product product : products) {
-                System.out.println("ID: " + product.getId());
-                System.out.println("Tên sản phẩm: " + product.getProductName());
-                System.out.println("Số lượng sản phẩm : " + product.getQuantity());
-                System.out.println("Giá : " + product.getPrice());
-                System.out.println("Loại Sản phẩm: " + product.getProductType());
-                System.out.println("===============================");
+                System.out.println(product);
+
             }
         }
-
     }
 
     public void showEditProduct() {
         System.out.println("---Sửa Sản Phẩm Trong Danh Sách---");
         System.out.print("Nhập ID sản phẩm cần cập nhật: ");
-        String id = Validate.checkID();
+        String id = inputString.nextLine();
         Product existingProduct = productManager.findIndexById(id);
         if (existingProduct == null) {
             System.out.println("Không tìm thấy sản phẩm có ID: " + id);
@@ -122,57 +139,46 @@ public class Menu {
         System.out.print("Số lượng sản phẩm (nhỏ hơn 100): ");
         int quantity = Validate.checkQuantity();
         existingProduct.setQuantity(quantity);
-        System.out.print("Giá sản phẩm (trên 10000 đồng): ");
+        System.out.print("Giá sản phẩm (trên 10.000 đồng): ");
         double price = Validate.checkPrice();
         existingProduct.setPrice(price);
-        System.out.print("Loại Sản phẩm: ");
+        System.out.print("Mô tả sản phẩm: ");
         String productType = inputString.nextLine();
         existingProduct.setProductType(productType);
         System.out.println("SỬA THÀNH CÔNG !!");
+        System.out.println("Ấn Enter để quay lại Menu...");
+        scanner.nextLine();
     }
 
-    public void showSearchById() {
-        System.out.println("---Tim Kiếm Sản Phẩm Theo ID---");
-        System.out.print("Nhập ID sản phẩm cần tìm: ");
-        String id = Validate.checkID();
-        if (productManager.findIndexById(id) != null) {
-            System.out.println(" =>>>Đã tìm thấy sản phẩm: " + productManager.findAll());
-        } else {
-            System.out.println("=>>> Không tìm thấy sản phẩm với ID đã cho :-(");
+    private void showSortProducts() {
+        System.out.print("Sắp xếp theo giá : \n" +
+                "1. Tăng dần\n" +
+                "2. Giảm dần\n ");
+        int sortOption = inputInt.nextInt();
+        boolean ascending = (sortOption == 1);
+        productManager.sortProductsByPrice(ascending);
+        System.out.println("Sản phẩm được sắp xếp theo giá.");
+        List<Product> sortedProducts = productManager.findAll();
+        for (Product product: sortedProducts) {
+            System.out.println(product);
         }
+
+        System.out.println("Ấn Enter để quay lại Menu...");
+        scanner.nextLine();
     }
 
-    public void showSearchByName() {
-        System.out.println("---Tim Kiếm Sản Phẩm Theo Tên---");
-        System.out.print("Nhập tên sản phẩm cần tìm: ");
-        String name = inputString.nextLine();
-        System.out.println("Sản phẩm có tên " + name + " là: ");
-        if (!productManager.searchByName(name).isEmpty()) {
-            for (Product product : productManager.searchByName(name)) {
-                System.out.println(product.getData());
-            }
+    private void showFindMaxPriceProduct() {
+        System.out.println("---Tìm kiếm sản phẩm giá đắt nhất---");
+        Product findMaxPriceProduct = productManager.findMaxPriceProduct();
+        if (findMaxPriceProduct != null) {
+            System.out.println("Sản phẩm đắt nhất:");
+            System.out.println("ID: " + findMaxPriceProduct.getId());
+            System.out.println("Name: " + findMaxPriceProduct.getProductName());
+            System.out.println("Price: " + findMaxPriceProduct.getPrice());
         } else {
-            System.out.println("không tìm thấy sản phẩm có tên " + name + " :-(");
+            System.out.println("Không tìm thấy sản phẩm nào.");
         }
-
-    }
-    public void showProductByType() {
-        System.out.println("------ TÌM SẢN PHẨM THEO LOẠI-----");
-        System.out.println("Loại: 'Thuốc lá' hoăc 'Nước ngọt'");
-        System.out.print("Nhập loại sản phẩm: ");
-        String type = inputString.nextLine();
-
-        List<Product> productList = productManager.getByCategory(type);
-
-        if (!productList.isEmpty()) {
-            System.out.println("Danh sách sản phẩm thuộc loại " + type + ":");
-            for (Product product : productList) {
-                System.out.println(product);
-            }
-        } else {
-            System.out.println("Không có sản phẩm nào thuộc loại " + type + ".");
-        }
-
-
+        System.out.println("Ấn Enter để quay lại Menu...");
+        scanner.nextLine();
     }
 }

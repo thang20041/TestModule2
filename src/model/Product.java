@@ -5,14 +5,14 @@ public class Product {
     private String productName;
     private int quantity;
     private double price;
-    private String productType;
+    private String describeProduct;
 
-    public Product(String id, String productName, int quantity, double price, String productType) {
+    public Product(String id, String productName, int quantity, double price, String describeProduct) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
         this.price = price;
-        this.productType = productType;
+        this.describeProduct = describeProduct;
     }
 
     public String getId() {
@@ -48,19 +48,19 @@ public class Product {
     }
 
     public String getProductType() {
-        return productType;
+        return describeProduct;
     }
 
     public void setProductType(String productType) {
-        this.productType = productType;
+        this.describeProduct = productType;
     }
 
     @Override
     public String toString() {
-        return "ID: " + id + "  -  Tên: " + productName + "  -  Số lượng: " + quantity + "  -  Giá: " + price + "  -  Loại: " + productType;
+        return "ID: " + id + "  -  Tên: " + productName + "  -  Số lượng: " + quantity + "  -  Giá: " + price + "  -  Mô tả: " + describeProduct;
     }
 
     public String getData() {
-        return id + "," + productName + "," + quantity + "," + price + "," + productType;
+        return id + "," + productName + "," + quantity + "," + price + "," + describeProduct;
     }
 }

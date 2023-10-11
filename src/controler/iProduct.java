@@ -10,6 +10,5 @@ public interface iProduct<T> {
     Product findIndexById(String id);
     boolean editProduct(String id, T t);
     List<T> findAll();
-    List<T> searchByName(String productName);
 
 }

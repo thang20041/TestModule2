@@ -3,7 +3,6 @@ package model;
 import controler.ReadAndWriteFileProduct;
 import controler.iProduct;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductManager implements iProduct<Product> {
@@ -16,6 +15,15 @@ public class ProductManager implements iProduct<Product> {
 
 
     }
+    public boolean isIDExists(String id) {
+        for (Product product : productList) {
+            if (product.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void addProduct(Product product) {
         productList.add(product);
@@ -65,26 +73,32 @@ public class ProductManager implements iProduct<Product> {
     public List<Product> findAll() {
         return this.productList;
     }
+    public void sortProductsByPrice(boolean ascending) {
+        productList.sort((p1, p2) -> {
+            if (ascending) {
+                return Double.compare(p1.getPrice(), p2.getPrice());
+            } else {
+                return Double.compare(p2.getPrice(), p1.getPrice());
+            }
+        });
+    }
 
-    @Override
-    public List<Product> searchByName(String productName) {
-        List<Product> result = new ArrayList<>();
+    public Product findMaxPriceProduct() {
+        if (productList.isEmpty()) {
+            return null;
+        }
+
+        Product findMaxPriceProduct = productList.get(0);
         for (Product product : productList) {
-            if (product.getProductName().toLowerCase().contains(productName.toLowerCase())) {
-                result.add(product);
+            if (product.getPrice() > findMaxPriceProduct.getPrice()) {
+                findMaxPriceProduct = product;
             }
         }
-        return result;
+
+        return findMaxPriceProduct;
     }
-    public List<Product> getByCategory(String type) {
-        List<Product> matchingProducts = new ArrayList<>();
-        for (Product product : productList) {
-            if (product.getProductType().equalsIgnoreCase(type)) {
-                matchingProducts.add(product);
-            }
-        }
-        return matchingProducts;
-    }
+
+
 
 
 
